@@ -9,17 +9,41 @@ public class GameManager : MonoBehaviour
 
     public string _stageName = "Stage Zero";
 
-    public enum GameStage
+    public GMBaseState _currentState;
+    public InitState _initState = new InitState();
+    public LoadDataState _loadState = new LoadDataState();
+
+    public void SwitchState(GMBaseState nextState)
     {
-        initi = 0,
-        dataLoad = 1,
-        start = 2,
-        GameLoop = 3,
-        GameEnd = 4,
-        destroy = 5,
+        _currentState.OnExitState(this);
+        _currentState = nextState;
+        _currentState.OnEnterState(this);
     }
 
-    public GameStage state;
+    public void InitStateOnEnterState()
+    {
+        Debug.Log("this is on Enter for init State");
+    }
+    public void InitStateOnUpdateState()
+    {
+        Debug.Log("this is on Update for init State");
+    }
+    public void InitStateOnExitState()
+    {
+        Debug.Log("this is on Exit for init State");
+    }
+    public void DataLoadStateOnEnterState()
+    {
+        Debug.Log("this is on Enter for Data Load State");
+    }
+    public void DataLoadStateOnUpdateState()
+    {
+        Debug.Log("this is on Update for Data Load State");
+    }
+    public void DataLoadStateOnExitState()
+    {
+        Debug.Log("this is on Exit for Data Load State");
+    }
 
     private void Awake()
     {
@@ -31,49 +55,18 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        _currentState = _initState;
+        _initState.OnEnterState(this);
     }
 
     public void Update()
     {
-        switch (state) 
-        {
-            case GameStage.initi:
-                {
-                    Debug.Log("My state is init");
-                }
-                break;
+       _currentState.OnUpdateState(this);
 
-            case GameStage.dataLoad:
-                {
-                    Debug.Log("My state is DataLoad");
-                }
-                break;
-            case GameStage.start:
-                {
-                    Debug.Log("My state is start");
-                }
-                break;
-            case GameStage.GameLoop:
-                {
-                    Debug.Log("My state is gameloop");
-                }
-                break;
-            case GameStage.GameEnd:
-                {
-                    Debug.Log("My state is gameend");
-                }
-                break;
-            case GameStage.destroy:
-                {
-                    Debug.Log("My state is destroy");
-                }
-                break;
-
-                default:
-                { 
-
-                }
-                break;
-        }
+       if (Input.GetKeyDown(KeyCode.Space))
+       {
+            SwitchState(_loadState);
+       }
     }
 }
