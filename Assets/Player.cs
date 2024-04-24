@@ -13,7 +13,9 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        
+        Vector2 x = new Vector2();
+
+        GameManager.instance._stageName = "Stage 1";
     }
 
     // Update is called once per frame
