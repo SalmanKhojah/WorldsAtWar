@@ -5,10 +5,11 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     
-
+    public Transform cameraTran;
     public float _speed = 5f;
 
     public double _spped2 = 5.55;
+    private int lifes = 4;
 
     void Start()
     {
@@ -30,7 +31,7 @@ public class Player : MonoBehaviour
             moveVector.x = moveVector.x + (-_speed * Time.deltaTime);
         
         }
-        
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
             moveVector.y = moveVector.y + (_speed * Time.deltaTime);
@@ -41,5 +42,8 @@ public class Player : MonoBehaviour
         }
 
         transform.position = moveVector;
+
+        moveVector.z = cameraTran.position.z;
+        cameraTran.position = moveVector;
     }
 }
