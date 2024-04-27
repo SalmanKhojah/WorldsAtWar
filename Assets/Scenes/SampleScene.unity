@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dae0b3fe0e8c455f82145b31e7cc1f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTran: {fileID: 519420032}
+  cameraTran: {fileID: 0}
   _speed: 5
   _spped2: 5.55
 --- !u!212 &544368600
@@ -515,7 +515,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stageName: Stage Zero
-  state: 0
 --- !u!4 &1141285505
 Transform:
   m_ObjectHideFlags: 0

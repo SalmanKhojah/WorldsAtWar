@@ -43,6 +43,23 @@ public class Player : MonoBehaviour
             moveVector.y = moveVector.y + (- _speed * Time.deltaTime);
         }
 
+        if(moveVector.x > 10.844)
+        {
+            moveVector.x = 10.844f;
+        }
+        if(moveVector.x < -10.844)
+        {
+            moveVector.x = -10.844f;
+        }
+        if (moveVector.y > 3.791)
+        {
+            moveVector.y = 3.791f;
+        }
+        if (moveVector.y < -3.791)
+        {
+            moveVector.y = -3.791f;
+        }
+
         transform.position = moveVector;
 
         moveVector.z = cameraTran.position.z;

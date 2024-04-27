@@ -24,6 +24,7 @@ public class InitState : GMBaseState
     }
 }
 
+
 public class LoadDataState : GMBaseState
 {
     public override void OnEnterState(GameManager manager)
