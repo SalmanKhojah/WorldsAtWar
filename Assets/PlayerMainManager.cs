@@ -5,15 +5,15 @@ using UnityEngine;
 public class PlayerMainManager : MonoBehaviour
 {
     public float _speed = 5;
-    public SpaceShip _shipObject;
-    public BulletMovement _bulletObject;
+    private SpaceShip _shipObject;
+    private int _points;
 
-    public List<BulletMovement> _bulletList;
 
     public void Init()
     {
-        _bulletList = new List<BulletMovement>();
         _shipObject = transform.GetChild(0).GetComponent<SpaceShip>();
+
+        _points = 0;
     }
 
     // Update is called once per frame
@@ -57,37 +57,35 @@ public class PlayerMainManager : MonoBehaviour
         {
             moveVector.y = -3.791f;
         }
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //_bulletFiredFlag = true;
-            BulletMovement temp = Instantiate(_bulletObject, _shipObject.transform.position, _shipObject.transform.rotation);
+            BulletContainer container = new BulletContainer();
+            //float twopi = (2f * Mathf.PI);
 
-            _bulletList.Add(temp);
+            
+            container.position = _shipObject.transform.position;
+            container.bulletType = BulletSpawner.BulletType.NormalBullet;
+            container.BeamColor = Color.red;
+                
+            EventSystemRef.instance.BulletRequest.Invoke(container);
+
+            _points++;
+            
+            EventSystemRef.instance.UpdateTextHandler.Invoke(_points.ToString());
+
+            // for (float k = 0; k < twopi; k += Time.deltaTime * 100)
+            // {
+            //     container.position.x = _shipObject.transform.position.x + 2 * Mathf.Cos(k);
+            //     container.position.y = _shipObject.transform.position.y + 2 * Mathf.Sin(k);
+            //     container.bulletType = BulletSpawner.BulletType.NormalBullet;
+            //     container.BeamColor = Color.red;
+                
+            //     EventSystemRef.instance.BulletRequest.Invoke(container);
+            // }
+        }
+                _shipObject.transform.position = moveVector;
         }
 
-        _shipObject.transform.position = moveVector;
-
-
-
-        int count = _bulletList.Count;
-        for (int i = count - 1; i >= 0; i--)
-        {
-            Vector3 bulletVector = _bulletList[i].transform.position;
-
-            bulletVector.y = bulletVector.y + 5 * Time.deltaTime;
-
-            _bulletList[i].transform.position = bulletVector;
-
-            if (_bulletList[i].transform.position.y > 10)
-            {
-                BulletMovement temp = _bulletList[i];
-                _bulletList.RemoveAt(i);
-
-                Destroy(temp.gameObject);
-            }
-        }
 
 
     }
-}

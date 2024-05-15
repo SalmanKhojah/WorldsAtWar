@@ -15,6 +15,12 @@ public class GameManager : MonoBehaviour
 
     public PlayerMainManager _playerMainManager;
 
+    public EnemyMainManager _enemyMainManager;
+    public BulletMainManager _bulletMainManager;
+    public GameUiMainManager _gameUiMainManager;
+
+    public EventSystemRef _eventSystemRef;
+
     public void SwitchState(GMBaseState nextState)
     {
         _currentState.OnExitState(this);
@@ -43,6 +49,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("this is on Update for Data Load State");
         _playerMainManager.UpdateScript();
+        _enemyMainManager.UpdateScript();
+        _bulletMainManager.UpdateScript();
     }
     public void DataLoadStateOnExitState()
     {
@@ -68,6 +76,14 @@ public class GameManager : MonoBehaviour
     {
         _playerMainManager = GameObject.FindAnyObjectByType<PlayerMainManager>();
         _playerMainManager.Init();
+        _enemyMainManager = GameObject.FindAnyObjectByType<EnemyMainManager>();
+        _enemyMainManager.Init();
+        _bulletMainManager = GameObject.FindAnyObjectByType<BulletMainManager>();
+        _bulletMainManager.Init();
+        _eventSystemRef = GameObject.FindAnyObjectByType<EventSystemRef>();
+        _eventSystemRef.Init();
+        _gameUiMainManager = GameObject.FindAnyObjectByType<GameUiMainManager>();
+        _gameUiMainManager.Init();
     }
 
     public void Update()
