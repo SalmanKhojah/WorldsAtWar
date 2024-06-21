@@ -5,12 +5,12 @@ using UnityEngine.UIElements;
 
 public class ESMainManager : MonoBehaviour
 {
-    public List<ESBody> _activeESObjectList;
+    private List<ESBody> _activeESObjectList;
     private ESSpawner _enemyScannerSpawnerController;
     private PlayerMainManger playerMainManager;
 
     private Vector3 _playerStartPosition;
-    private float _movementThreshold = 10f; // Distance the player needs to move to trigger the wave
+    private float _movementThreshold = 30f; // Distance the player needs to move to trigger the wave
     private bool _beginWaveFlag;
     private bool _playerHasMovedEnough; 
 
@@ -36,8 +36,12 @@ public class ESMainManager : MonoBehaviour
         if (!_beginWaveFlag)
         _activeESObjectList = _enemyScannerSpawnerController.Spawn(numberOfEnemies, yOffSetAheadOfPlayer);
 
-        _activeESObjectList[_activeESObjectList.Count - 1].BeginObject();
-        _beginWaveFlag = true;
+        if (_activeESObjectList.Count > 0)
+        {
+            _activeESObjectList[_activeESObjectList.Count - 1].BeginObject();
+            _beginWaveFlag = true;
+        }
+
 
     }
     private bool PlayerMovedEnough()

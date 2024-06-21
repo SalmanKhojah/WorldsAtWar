@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-public class TileMapGenerator : MonoBehaviour
+public class PlayerTileMapGenerator : MonoBehaviour
 {
     public GameObject player;
     public TileBase tile;

@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
     private GameUiMainManager _gameUiMainManager;
     private ExplosionManager _explosionManager;
     private FadeinManager _fadeinManager;
+    private SamDialogueMainManager _samDialogueMainManager;
+
     private float _currentWaitBeforeResettingTime = 0;
     private float _maxWaitBeforeResettingTime = 3.0f;
 
@@ -84,21 +86,23 @@ public class GameManager : MonoBehaviour
         Debug.Log("this is on Enter for init State");
        
         _playerManager = FindAnyObjectByType<PlayerMainManger>();
-        _enemyMainManger = FindAnyObjectByType<EnemeyMainManger>();
         _bulletMainManger = FindAnyObjectByType<BulletMainManger>();
         _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
         _explosionManager = FindAnyObjectByType<ExplosionManager>();
         _fadeinManager = FindAnyObjectByType<FadeinManager>();
         _esMainManager = FindAnyObjectByType<ESMainManager>();
+        _samDialogueMainManager = FindAnyObjectByType<SamDialogueMainManager>();
+        _enemyMainManger = FindAnyObjectByType<EnemeyMainManger>();
         
 
         _playerManager.Initialize();
-        _enemyMainManger.Initialize();
         _bulletMainManger.Initialize();
         _gameUiMainManager.Initialize();
         _explosionManager.Initialize();
         _fadeinManager.Initialize();
         _esMainManager.Initialize();
+        _samDialogueMainManager.Initialize();
+        _enemyMainManger.Initialize();
 
         SwitchState(_gameLoopState);
     }
@@ -133,6 +137,7 @@ public class GameManager : MonoBehaviour
         _esMainManager.UpdateScript();
         _bulletMainManger.UpdateScript();
         _explosionManager.UpdateScript();
+        _samDialogueMainManager.UpdateScript();
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {

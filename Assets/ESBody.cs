@@ -52,12 +52,17 @@ public class ESBody : MonoBehaviour
     private float _alignmentAngleThreshold = 10f; //degrees
     private bool isDodging = false;
     private float targetDodgeSpeed;
+    private bool playerPositionFrozen = false;
+    private Vector3 frozenPosition;
 
     public bool StartMovingCheck { get { return _startMoving; } set { _startMoving = value; } }
 
     public bool IsCountingDown { get { return _IsCountingDown; } set { _IsCountingDown = value; } }
 
     private PlayerMainManger playerMainManager;
+    public ChangeScene changeScene;
+    public ScenePhase scenePhaseController;
+
 
     void Start()
     {
@@ -66,12 +71,13 @@ public class ESBody : MonoBehaviour
 
     public void Initialize()
     {
+
         playerMainManager = FindObjectOfType<PlayerMainManger>();
+
         _maxHealth = 3;
         _currentHealth = _maxHealth;
         //_speed = 0.05f;
 
-        _currentWaitTime = 0;
         _startMoving = false;
         _IsCountingDown = false;
         _playerDetected = false;
@@ -82,6 +88,9 @@ public class ESBody : MonoBehaviour
 
         gameObject.SetActive(false);
         transform.GetChild(1).GetChild(0).GetComponent<Collider2D>().enabled = false;
+
+        //ChangeScene changeScene = new ChangeScene();
+        
 
     }
 
@@ -151,6 +160,8 @@ public class ESBody : MonoBehaviour
             Move();
         }
 
+        Pause();
+
         //CheckBoundry();
     }
 
@@ -207,8 +218,10 @@ private void Move()
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
                 _playerDetected = true;
+                FreezePlayerPosition();
                 Debug.Log($"Player detected at angle {rayAngle} within cone, moving towards player.");
-                StartCoroutine(MoveTowardsPlayer());
+                scenePhaseController.StartPhaseScene();
+                //StartCoroutine(MoveTowardsPlayer());
                 break; //Exit the loop if the player is detected
             }
 
@@ -227,7 +240,9 @@ private void Move()
 
         if (_playerDetected)
         {
-            StartCoroutine(MoveTowardsPlayer());
+            //StartCoroutine(MoveTowardsPlayer());
+            //scenePhaseController.StartPhaseScene();
+            
         }
         sweepRaysCoroutine = null;
     }
@@ -270,7 +285,21 @@ private void Move()
         }
     }
 
-private bool BulletDodge(ref Vector3 moveVector)
+public void FreezePlayerPosition()
+{
+    playerPositionFrozen = true;
+    frozenPosition = playerMainManager.ShipTransform.position; // Capture the position at the moment of detection
+}
+private void Pause()
+{
+    if (playerPositionFrozen)
+    {
+        // Continuously set the ship's position to the frozen position
+        playerMainManager.ShipTransform.position = frozenPosition;
+    }
+}
+
+    private bool BulletDodge(ref Vector3 moveVector)
 {
     Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, _dodgeDetectionRadius, _projectileLayerMask);
     bool dodgedThisFrame = false;

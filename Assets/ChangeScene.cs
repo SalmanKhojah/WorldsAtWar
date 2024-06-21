@@ -9,20 +9,18 @@ public class ChangeScene : MonoBehaviour
 
     private Image _fadeImage;
 
-    private Color _startColor = Color.black;
-    private Color _endColor = Color.black;
+    private Color _startColor = Color.green;
+    private Color _endColor = Color.blue;
 
     private bool _startFade = false;
 
     [SerializeField]
     private float _currentColorLerpTime = 0;
-    private float _maxColorLerpTime = 1;
+    private float _maxColorLerpTime = 3;
 
     // Start is called before the first frame update
     void Start()
     {
-        _fadeImage = GetComponent<Image>();
-
         _startColor.a = 0;
 
         _startFade = false;
@@ -33,20 +31,27 @@ public class ChangeScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _currentColorLerpTime = 0;
-            _startFade = true;
-        }
-
         if (_startFade == true)
         {
             ColorLerpProcess();
         }
     }
 
-    private void ColorLerpProcess()
+    public void StartSceneChange()
     {
+        _currentColorLerpTime = 0;
+        _startFade = true;
+    }
+
+    public void ColorLerpProcess()
+    {
+        _fadeImage = GetComponent<Image>();
+
+    // Check if _fadeImage is not null and ensure it's enabled
+        if (_fadeImage != null)
+        {
+        _fadeImage.enabled = true; // Enable the Image component if it's disabled
+        }
         float t = _currentColorLerpTime / _maxColorLerpTime;
 
         if (t > 1)
@@ -58,7 +63,7 @@ public class ChangeScene : MonoBehaviour
 
         if (t == 1)
         {
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene("00_Title");
         }
         else
         {
