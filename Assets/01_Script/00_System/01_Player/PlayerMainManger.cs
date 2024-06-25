@@ -3,37 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMainManger : MonoBehaviour , IDataPersistence
-{ 
-    private float _speed = 5;
+public class PlayerMainManger : MonoBehaviour, IDataPersistence
+{
+    private float _SpaceShipSpeed = 5;
+    private float _YoungOmarSpeed = 4.5f;
     private float _normalShotSpeed = 13.0f;
 
-    private PlayerDeathController _playerDeathController; 
+    private PlayerDeathController _playerDeathController;
 
     private int _score;
 
     private SpaceShipObject _shipObject;
+    private YoungOmarObject _youngOmarObject;
 
     public Transform ShipTransform => _shipObject.transform;
+    public Transform YoungOmarTransform => _youngOmarObject.transform;
 
     private float _leftRightInputValue;
     private float _upDownInputValue;
 
     private int _currentHealth = 0;
     private int _maxHealth = 1;
+    private Animator _youngOmarGFXAnimator;
+    private Transform _youngOmarObjectTransform;
+    public InputActionAsset inputActionAsset;
 
 
 
-    
-   
-    public void Initialize()
+    public void InitializeYoungOmar()
     {
+        EnableActionMap("YoungOmar");
+        _leftRightInputValue = 0;
+        _upDownInputValue = 0;
+        //_score = 0;
+        _youngOmarObject = transform.GetChild(1).GetComponent<YoungOmarObject>();
+        _youngOmarObjectTransform = transform.GetChild(1);
+        _youngOmarGFXAnimator = transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<Animator>();
+
+        //_youngOmarObject.transform.position = Vector3.zero;  
+
+        EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
+
+        // _playerDeathController = GetComponent<PlayerDeathController>();
+        // _playerDeathController.Initialize();
+
+        SetYoungOmarActiveState(true);
+
+        // _currentHealth = _maxHealth;
+    }
+
+    public void InitializeSpace()
+    {
+        DisableActionMap("YoungOmar");
+        EnableActionMap("SpaceShip");
         _leftRightInputValue = 0;
         _upDownInputValue = 0;
         //_score = 0;
         _shipObject = transform.GetChild(0).GetComponent<SpaceShipObject>();
 
-        _shipObject.transform.position = Vector3.zero;  
+        _shipObject.transform.position = Vector3.zero;
 
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
 
@@ -49,18 +77,76 @@ public class PlayerMainManger : MonoBehaviour , IDataPersistence
     {
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.Invoke(_score);
     }
-
+    public void SetYoungOmarActiveState(bool flag)
+    {
+        _youngOmarObject.gameObject.SetActive(flag);
+    }
     public void SetPlayerShipActiveState(bool flag)
     {
         _shipObject.gameObject.SetActive(flag);
     }
+    private string lastVerticalDirection = "up";
+    private string lastHorizontalDirection = "right";
 
-    public void UpdateScript()
+    public void UpdateScriptYoungOmar()
+    {
+        Vector3 moveVector = _youngOmarObject.transform.position;
+
+        moveVector.x += _leftRightInputValue * _YoungOmarSpeed * Time.deltaTime;
+        moveVector.y += _upDownInputValue * _YoungOmarSpeed * Time.deltaTime;
+
+        bool isMoving = _leftRightInputValue != 0 || _upDownInputValue != 0;
+        if (isMoving)
+        {
+            lastVerticalDirection = _upDownInputValue > 0 ? "up" : _upDownInputValue < 0 ? "down" : lastVerticalDirection;
+            lastHorizontalDirection = _leftRightInputValue > 0 ? "right" : _leftRightInputValue < 0 ? "left" : lastHorizontalDirection;
+
+            if (lastHorizontalDirection == "right")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarRunRight", -1, 0f);
+            }
+            else if (lastHorizontalDirection == "left")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarRunLeft", -1, 0f);
+            }
+            else if (lastVerticalDirection == "up")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarRunForward", -1, 0f);
+            }
+            else if (lastVerticalDirection == "down")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarRunDown", -1, 0f);
+            }
+        }
+        else
+        {
+            if (lastVerticalDirection == "up")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarIdleForward", -1, 0f);
+            }
+            else if (lastVerticalDirection == "down")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarIdleDown", -1, 0f);
+            }
+            else if (lastHorizontalDirection == "right")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarIdleRight", -1, 0f);
+            }
+            else if (lastHorizontalDirection == "left")
+            {
+                _youngOmarGFXAnimator.Play("YoungOmarIdleLeft", -1, 0f);
+            }
+        }
+
+        _youngOmarObject.transform.position = moveVector;
+    }
+
+    public void UpdateScriptSpace()
     {
         Vector3 moveVector = _shipObject.transform.position;
 
-        moveVector.x += _leftRightInputValue * _speed * Time.deltaTime;
-        moveVector.y += _upDownInputValue * _speed * Time.deltaTime;
+        moveVector.x += _leftRightInputValue * _SpaceShipSpeed * Time.deltaTime;
+        moveVector.y += _upDownInputValue * _SpaceShipSpeed * Time.deltaTime;
 
         // if (moveVector.x > 8)
         // {
@@ -96,8 +182,19 @@ public class PlayerMainManger : MonoBehaviour , IDataPersistence
 
         return result;
     }
+    public void EnableActionMap(string mapName)
+    {
+        var actionMap = inputActionAsset.FindActionMap(mapName, true);
+        actionMap.Enable();
+    }
 
-    public void ReadUserLeftRightMovementInput(InputAction.CallbackContext context)
+    public void DisableActionMap(string mapName)
+    {
+        var actionMap = inputActionAsset.FindActionMap(mapName, true);
+        actionMap.Disable();
+    }
+
+    public void YoungOmarUserLeftRightMovementInput(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
 
@@ -106,6 +203,7 @@ public class PlayerMainManger : MonoBehaviour , IDataPersistence
             if (value > 0)
             {
                 _leftRightInputValue = 1;
+                Debug.Log("movement");
             }
             else if (value < 0)
             {
@@ -118,7 +216,7 @@ public class PlayerMainManger : MonoBehaviour , IDataPersistence
         }
     }
 
-    public void ReadUserUpDownMovement(InputAction.CallbackContext context)
+    public void YoungOmarUserUpDownMovement(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
 
@@ -139,7 +237,55 @@ public class PlayerMainManger : MonoBehaviour , IDataPersistence
         }
     }
 
-    public void ReadUserShootInput(InputAction.CallbackContext context)
+    public void YoungOmarReadUserOpenVaultInput(InputAction.CallbackContext context)
+    {
+
+    }
+
+    public void SpaceReadUserLeftRightMovementInput(InputAction.CallbackContext context)
+    {
+        float value = context.ReadValue<float>();
+
+        if (context.performed)
+        {
+            if (value > 0)
+            {
+                _leftRightInputValue = 1;
+                Debug.Log("movement");
+            }
+            else if (value < 0)
+            {
+                _leftRightInputValue = -1;
+            }
+        }
+        else if (context.canceled)
+        {
+            _leftRightInputValue = 0;
+        }
+    }
+
+    public void SpaceReadUserUpDownMovement(InputAction.CallbackContext context)
+    {
+        float value = context.ReadValue<float>();
+
+        if (context.performed)
+        {
+            if (value > 0)
+            {
+                _upDownInputValue = 1;
+            }
+            else if (value < 0)
+            {
+                _upDownInputValue = -1;
+            }
+        }
+        else if (context.canceled)
+        {
+            _upDownInputValue = 0;
+        }
+    }
+
+    public void SpaceReadUserShootInput(InputAction.CallbackContext context)
     {
         if (context.started)
         {
@@ -192,5 +338,5 @@ public class PlayerMainManger : MonoBehaviour , IDataPersistence
         }
     }
 
-   
+
 }

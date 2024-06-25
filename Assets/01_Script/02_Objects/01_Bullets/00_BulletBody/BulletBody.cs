@@ -24,7 +24,7 @@ public class BulletBody : MonoBehaviour
 
     public void UpdateScript()
     {
-        //CheckBoundery();
+        CheckBoundery();
 
         if (_bulletLogic != null)
         {

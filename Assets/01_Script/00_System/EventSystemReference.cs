@@ -43,6 +43,12 @@ public class ESPutObjectBackToSleepEvent : UnityEvent<ESBody>
 }
 
 [Serializable]
+public class OPBSPutObjectBackToSleepEvent : UnityEvent<OPBSBody>
+{
+
+}
+
+[Serializable]
 public class ExplostionRequestEvent : UnityEvent<Vector3>
 {
 
@@ -59,6 +65,7 @@ public class EventSystemReference : MonoBehaviour
     public UiTextScoreUpdateRequestUnityEvent UpdateUiScoreEventTextHandler;
     public EnemyPutObjectBackToSleepEvent EnemyPutObjectBackToSleepEventHandler;
     public ESPutObjectBackToSleepEvent ESPutObjectBackToSleepEventHandler;
+    public OPBSPutObjectBackToSleepEvent OPBSPutObjectBackToSleepEventHandler;
     public ExplostionRequestEvent ExplostionRequestEventHandler;
     public UnityEvent GameManagerStartPlayerDeathSequenceHandler;
 

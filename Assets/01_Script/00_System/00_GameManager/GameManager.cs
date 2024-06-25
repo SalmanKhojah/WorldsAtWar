@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     private ExplosionManager _explosionManager;
     private FadeinManager _fadeinManager;
     private SamDialogueMainManager _samDialogueMainManager;
+    private StarGenerator _starGenerator;
+    private OPBSMainManager _opbsMainManager;
 
     private float _currentWaitBeforeResettingTime = 0;
     private float _maxWaitBeforeResettingTime = 3.0f;
@@ -43,6 +45,7 @@ public class GameManager : MonoBehaviour
     private EventSystemReference _eventSystem;
 
     private PlayerDeathAnimationStep _step;
+
 
     public void SwitchState(GMBaseState nextState)
     {
@@ -86,6 +89,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("this is on Enter for init State");
        
         _playerManager = FindAnyObjectByType<PlayerMainManger>();
+        _opbsMainManager = FindAnyObjectByType<OPBSMainManager>();
         _bulletMainManger = FindAnyObjectByType<BulletMainManger>();
         _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
         _explosionManager = FindAnyObjectByType<ExplosionManager>();
@@ -93,16 +97,20 @@ public class GameManager : MonoBehaviour
         _esMainManager = FindAnyObjectByType<ESMainManager>();
         _samDialogueMainManager = FindAnyObjectByType<SamDialogueMainManager>();
         _enemyMainManger = FindAnyObjectByType<EnemeyMainManger>();
+        _starGenerator = FindAnyObjectByType<StarGenerator>();
         
-
-        _playerManager.Initialize();
-        _bulletMainManger.Initialize();
-        _gameUiMainManager.Initialize();
-        _explosionManager.Initialize();
-        _fadeinManager.Initialize();
-        _esMainManager.Initialize();
-        _samDialogueMainManager.Initialize();
-        _enemyMainManger.Initialize();
+        _playerManager.InitializeYoungOmar();
+        _opbsMainManager.Initialize();
+        //_playerManager.InitializeSpace();
+        //_starGenerator.Initialize();
+        // _bulletMainManger.Initialize();
+        // _gameUiMainManager.Initialize();
+        // _explosionManager.Initialize();
+        // _fadeinManager.Initialize();
+        // _esMainManager.Initialize();
+        // _samDialogueMainManager.Initialize();
+        // _enemyMainManger.Initialize();
+        
 
         SwitchState(_gameLoopState);
     }
@@ -132,17 +140,20 @@ public class GameManager : MonoBehaviour
     public void OnGameLoopOnUpdateState()
     {
         Debug.Log("this is on ENTER for GAMEUPDATE State");
-        _playerManager.UpdateScript();
-        //_enemyMainManger.UpdateScript();
-        _esMainManager.UpdateScript();
-        _bulletMainManger.UpdateScript();
-        _explosionManager.UpdateScript();
-        _samDialogueMainManager.UpdateScript();
+           _opbsMainManager.UpdateScript();
+           _playerManager.UpdateScriptYoungOmar();
+        // _playerManager.UpdateScriptSpace();
+        // _starGenerator.UpdateScript();
+        // //_enemyMainManger.UpdateScript();
+        // _esMainManager.UpdateScript();
+        // _bulletMainManger.UpdateScript();
+        // _explosionManager.UpdateScript();
+        // _samDialogueMainManager.UpdateScript();
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {
-            _esMainManager.PutAllEnemiesToSleep();
-            _explosionManager.PutExpolsionToSleep();
+            // _esMainManager.PutAllEnemiesToSleep();
+            // _explosionManager.PutExpolsionToSleep();
             SwitchState(_initSate);
         }
     }
@@ -240,10 +251,13 @@ public class GameManager : MonoBehaviour
 
     public void OnUpdateLevel1RobotBattle()
     {
-        _playerManager.UpdateScript();
+        //_playerManager.UpdateScriptYoungOmar();
+        _playerManager.UpdateScriptSpace();
         _enemyMainManger.UpdateScript();
         _bulletMainManger.UpdateScript();
         _explosionManager.UpdateScript();
+
+        Debug.Log("updaterobot");
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {

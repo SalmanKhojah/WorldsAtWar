@@ -9,7 +9,7 @@ public class StarGenerator : MonoBehaviour
     private Dictionary<Vector2Int, List<GameObject>> generatedStars = new Dictionary<Vector2Int, List<GameObject>>();
     private PlayerMainManger playerMainManager;
 
-    void Start()
+    public void Initialize()
     {
         playerMainManager = FindObjectOfType<PlayerMainManger>();
         currentAreaPosition = PlayerAreaPosition();
@@ -24,7 +24,7 @@ public class StarGenerator : MonoBehaviour
         }
     }
 
-    void Update()
+    public void UpdateScript()
     {
         Vector2Int playerAreaPosition = PlayerAreaPosition();
         if (currentAreaPosition != playerAreaPosition)
