@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 96
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -104,15 +104,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8b030e9d87f1549fb9d18a5ecf9a1f5e
-      internalID: 1443987587
+      spriteID: 9e4bc7fbebd4b4c3d8d37570300b8a49
+      internalID: 1871186809
       vertices: []
       indices: 
       edges: []
@@ -121,19 +121,19 @@ TextureImporter:
       name: youngomarbaseanimation-Sheet_1
       rect:
         serializedVersion: 2
-        x: 96
+        x: 95
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 440afab220e414670a8de368337c10df
-      internalID: 1790689781
+      spriteID: cc98b7203e58a4f4382836801b99ffd1
+      internalID: 2099355457
       vertices: []
       indices: 
       edges: []
@@ -146,15 +146,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd7efa536a8b443dfa6ad0ba7f264af7
-      internalID: 985941694
+      spriteID: 6f425818c5e6b4b60840860f3c2eb614
+      internalID: -260734415
       vertices: []
       indices: 
       edges: []
@@ -167,15 +167,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e639b8bda17194fb3a0e18806f9259af
-      internalID: -1828119867
+      spriteID: 9fa225b3963c74e2f944793f34ac4b84
+      internalID: -1491566172
       vertices: []
       indices: 
       edges: []
@@ -184,19 +184,19 @@ TextureImporter:
       name: youngomarbaseanimation-Sheet_4
       rect:
         serializedVersion: 2
-        x: 384
+        x: 383
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7f211d2dc4a7c40daa311e6d21070e1c
-      internalID: 1439752303
+      spriteID: ef9013604dbbf4044bbde5bd5668b57b
+      internalID: 1005942595
       vertices: []
       indices: 
       edges: []
@@ -205,19 +205,19 @@ TextureImporter:
       name: youngomarbaseanimation-Sheet_5
       rect:
         serializedVersion: 2
-        x: 480
+        x: 478
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 810fe32c182d64c918b6b011bd4d5aad
-      internalID: -1817685553
+      spriteID: 111e91c9a38564d149bdc502b79dd1d7
+      internalID: 140706968
       vertices: []
       indices: 
       edges: []
@@ -230,15 +230,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d7e75f95996044019c706786dcb223f
-      internalID: -1015583885
+      spriteID: 806d3ed6141fa44f2bfc0efb04919529
+      internalID: -595115973
       vertices: []
       indices: 
       edges: []
@@ -251,15 +251,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 730d0b76011164b06964b9bfe537e201
-      internalID: 447999019
+      spriteID: d28efff61a08f41bea4d8548b8794440
+      internalID: -678036187
       vertices: []
       indices: 
       edges: []
@@ -272,15 +272,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 505242621324c4840b0fd8bd0859ddc2
-      internalID: 1189437696
+      spriteID: 06ec76cdfb7c74c7f864f12d1228eb81
+      internalID: 1074971917
       vertices: []
       indices: 
       edges: []
@@ -293,15 +293,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1e42095da10e24a4fb2223774cd7624c
-      internalID: 1012243936
+      spriteID: 684c6124d39d34143a22b37559cf6b09
+      internalID: -1081374863
       vertices: []
       indices: 
       edges: []
@@ -314,15 +314,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d57944c55c2fd48a990ff721ccd396fb
-      internalID: -1183060195
+      spriteID: 0a36e5631feaa4aebaca7e92b03ede78
+      internalID: -950869963
       vertices: []
       indices: 
       edges: []
@@ -331,19 +331,19 @@ TextureImporter:
       name: youngomarbaseanimation-Sheet_11
       rect:
         serializedVersion: 2
-        x: 1056
+        x: 1055
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1decc90b4438144788b760eef2d592ec
-      internalID: 1552417670
+      spriteID: 724e635540f0f4ca68a75c292b9f2e1a
+      internalID: 942786499
       vertices: []
       indices: 
       edges: []
@@ -356,15 +356,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f1480311436774c56aed1a8bb962fb3b
-      internalID: -335263710
+      spriteID: 0fca8e6e3a68d4dc183401f5dfd0c1f3
+      internalID: 1733606659
       vertices: []
       indices: 
       edges: []
@@ -377,15 +377,15 @@ TextureImporter:
         y: 0
         width: 96
         height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5295398bd6e1b4c51932cac9326f6d9e
-      internalID: 1919223562
+      spriteID: da491cf06320344278e0a10cb153eccf
+      internalID: -1855363329
       vertices: []
       indices: 
       edges: []
@@ -401,20 +401,20 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      youngomarbaseanimation-Sheet_0: 1443987587
-      youngomarbaseanimation-Sheet_1: 1790689781
-      youngomarbaseanimation-Sheet_10: -1183060195
-      youngomarbaseanimation-Sheet_11: 1552417670
-      youngomarbaseanimation-Sheet_12: -335263710
-      youngomarbaseanimation-Sheet_13: 1919223562
-      youngomarbaseanimation-Sheet_2: 985941694
-      youngomarbaseanimation-Sheet_3: -1828119867
-      youngomarbaseanimation-Sheet_4: 1439752303
-      youngomarbaseanimation-Sheet_5: -1817685553
-      youngomarbaseanimation-Sheet_6: -1015583885
-      youngomarbaseanimation-Sheet_7: 447999019
-      youngomarbaseanimation-Sheet_8: 1189437696
-      youngomarbaseanimation-Sheet_9: 1012243936
+      youngomarbaseanimation-Sheet_0: 1871186809
+      youngomarbaseanimation-Sheet_1: 2099355457
+      youngomarbaseanimation-Sheet_10: -950869963
+      youngomarbaseanimation-Sheet_11: 942786499
+      youngomarbaseanimation-Sheet_12: 1733606659
+      youngomarbaseanimation-Sheet_13: -1855363329
+      youngomarbaseanimation-Sheet_2: -260734415
+      youngomarbaseanimation-Sheet_3: -1491566172
+      youngomarbaseanimation-Sheet_4: 1005942595
+      youngomarbaseanimation-Sheet_5: 140706968
+      youngomarbaseanimation-Sheet_6: -595115973
+      youngomarbaseanimation-Sheet_7: -678036187
+      youngomarbaseanimation-Sheet_8: 1074971917
+      youngomarbaseanimation-Sheet_9: -1081374863
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

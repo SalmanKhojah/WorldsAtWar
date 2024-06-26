@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,6 +19,9 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
     public Transform ShipTransform => _shipObject.transform;
     public Transform YoungOmarTransform => _youngOmarObject.transform;
+    
+    public bool OldManDialogue => _hasTalkedToOldMan;
+    public bool InHatch => _inHatch;
 
     private float _leftRightInputValue;
     private float _upDownInputValue;
@@ -25,35 +29,38 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     private int _currentHealth = 0;
     private int _maxHealth = 1;
     private Animator _youngOmarGFXAnimator;
-    private Transform _youngOmarObjectTransform;
     public InputActionAsset inputActionAsset;
+    private string _youngOmarDirection = "right"; //Defaults at right
+    public InputAction _talkAction;
+    private Vector2 _lastInputDirection = Vector2.zero;
+    private bool _hasTalkedToOldMan = false;
+    private bool _inHatch = false;
+    public CinemachineVirtualCamera cameraSpace;
+    public CinemachineVirtualCamera cameraYoungOmar;
 
 
 
     public void InitializeYoungOmar()
     {
+        cameraYoungOmar.Priority = 10;
+        cameraSpace.Priority = 5;
         EnableActionMap("YoungOmar");
         _leftRightInputValue = 0;
         _upDownInputValue = 0;
-        //_score = 0;
         _youngOmarObject = transform.GetChild(1).GetComponent<YoungOmarObject>();
-        _youngOmarObjectTransform = transform.GetChild(1);
         _youngOmarGFXAnimator = transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<Animator>();
 
-        //_youngOmarObject.transform.position = Vector3.zero;  
 
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
 
-        // _playerDeathController = GetComponent<PlayerDeathController>();
-        // _playerDeathController.Initialize();
 
         SetYoungOmarActiveState(true);
-
-        // _currentHealth = _maxHealth;
     }
 
     public void InitializeSpace()
     {
+        cameraYoungOmar.Priority = 5;
+        cameraSpace.Priority = 10;
         DisableActionMap("YoungOmar");
         EnableActionMap("SpaceShip");
         _leftRightInputValue = 0;
@@ -85,62 +92,165 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     {
         _shipObject.gameObject.SetActive(flag);
     }
-    private string lastVerticalDirection = "up";
-    private string lastHorizontalDirection = "right";
+    private void TalkOldMan()
+    {
 
+        Vector2 inputDirection = new Vector2(_leftRightInputValue, _upDownInputValue).normalized;
+
+        if (inputDirection != Vector2.zero)
+        {
+            _lastInputDirection = inputDirection;
+        }
+
+
+
+        Vector3 rayStartPosition = _youngOmarObject.transform.position + new Vector3(0, -1.6f, 0);
+        Debug.DrawRay(rayStartPosition, _lastInputDirection * 3f, Color.red, 0.01f);
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, _lastInputDirection, 3f, LayerMask.GetMask("Oldman"));
+        if (hit.collider != null && !_hasTalkedToOldMan)
+        {
+
+
+            _hasTalkedToOldMan = true;
+            Debug.Log("Talked to");
+        }
+
+    }
+    private void CheckIfInHatch()
+    {
+     
+        Vector3 moveVector = _youngOmarObject.transform.position;
+        float leftBound = 5124.46f;
+        float rightBound = 5126.5f;
+        float upperBound = -0.7f;
+        float lowerBound = -1.7f;
+
+
+        if (moveVector.x > leftBound && moveVector.x < rightBound && moveVector.y < upperBound && moveVector.y > lowerBound)
+        {
+            
+            _inHatch = true;
+        }
+        else
+        {
+
+            _inHatch = false;
+        }
+
+    }
     public void UpdateScriptYoungOmar()
+    {
+
+        MoveYoungOmar();
+
+        TalkOldMan();
+
+        CheckIfInHatch();
+    }
+
+    private void MoveYoungOmar()
     {
         Vector3 moveVector = _youngOmarObject.transform.position;
 
         moveVector.x += _leftRightInputValue * _YoungOmarSpeed * Time.deltaTime;
         moveVector.y += _upDownInputValue * _YoungOmarSpeed * Time.deltaTime;
-
         bool isMoving = _leftRightInputValue != 0 || _upDownInputValue != 0;
         if (isMoving)
         {
-            lastVerticalDirection = _upDownInputValue > 0 ? "up" : _upDownInputValue < 0 ? "down" : lastVerticalDirection;
-            lastHorizontalDirection = _leftRightInputValue > 0 ? "right" : _leftRightInputValue < 0 ? "left" : lastHorizontalDirection;
+            _youngOmarDirection = _leftRightInputValue > 0 ? "right" : _leftRightInputValue < 0 ? "left" : _upDownInputValue > 0 ? "up" : _upDownInputValue < 0 ? "down" : _youngOmarDirection;
 
-            if (lastHorizontalDirection == "right")
-            {
-                _youngOmarGFXAnimator.Play("YoungOmarRunRight", -1, 0f);
-            }
-            else if (lastHorizontalDirection == "left")
-            {
-                _youngOmarGFXAnimator.Play("YoungOmarRunLeft", -1, 0f);
-            }
-            else if (lastVerticalDirection == "up")
-            {
-                _youngOmarGFXAnimator.Play("YoungOmarRunForward", -1, 0f);
-            }
-            else if (lastVerticalDirection == "down")
-            {
-                _youngOmarGFXAnimator.Play("YoungOmarRunDown", -1, 0f);
-            }
+            PlayAnimationIfNeeded(_youngOmarDirection);
         }
         else
         {
-            if (lastVerticalDirection == "up")
+
+            HandleIdleAnimation();
+        }
+
+        float leftBound = 5056f;
+        float rightBound = 5058.259f;
+        float upperBound = 0.39f;
+        float lowerBound = 0.09f;
+
+        if (moveVector.x > leftBound && moveVector.x < rightBound && moveVector.y < upperBound && moveVector.y > lowerBound)
+        {
+
+            float distToLeft = Mathf.Abs(moveVector.x - leftBound);
+            float distToRight = Mathf.Abs(moveVector.x - rightBound);
+            float distToUpper = Mathf.Abs(moveVector.y - upperBound);
+            float distToLower = Mathf.Abs(moveVector.y - lowerBound);
+
+
+            float minDist = Mathf.Min(distToLeft, distToRight, distToUpper, distToLower);
+
+
+            if (minDist == distToLeft)
             {
-                _youngOmarGFXAnimator.Play("YoungOmarIdleForward", -1, 0f);
+                moveVector.x = leftBound;
+                Debug.Log("Moved to left boundary.");
             }
-            else if (lastVerticalDirection == "down")
+            else if (minDist == distToRight)
             {
-                _youngOmarGFXAnimator.Play("YoungOmarIdleDown", -1, 0f);
+                moveVector.x = rightBound;
+                Debug.Log("Moved to right boundary.");
             }
-            else if (lastHorizontalDirection == "right")
+            else if (minDist == distToUpper)
             {
-                _youngOmarGFXAnimator.Play("YoungOmarIdleRight", -1, 0f);
+                moveVector.y = upperBound;
+                Debug.Log("Moved to upper boundary.");
             }
-            else if (lastHorizontalDirection == "left")
+            else if (minDist == distToLower)
             {
-                _youngOmarGFXAnimator.Play("YoungOmarIdleLeft", -1, 0f);
+                moveVector.y = lowerBound;
+                Debug.Log("Moved to lower boundary.");
             }
         }
 
         _youngOmarObject.transform.position = moveVector;
     }
+    private void PlayAnimationIfNeeded(string _youngOmarDirection)
+    {
+        string currentAnimation = _youngOmarGFXAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
 
+        if (_youngOmarDirection == "right" && currentAnimation != "YoungOmarRunRight")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarRunRight", 0, 0f);
+        }
+        else if (_youngOmarDirection == "left" && currentAnimation != "YoungOmarRunLeft")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarRunLeft", 0, 0f);
+        }
+        else if (_youngOmarDirection == "up" && currentAnimation != "YoungOmarRunUp")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarRunUp", 0, 0f);
+        }
+        else if (_youngOmarDirection == "down" && currentAnimation != "YoungOmarRunDown")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarRunDown", 0, 0f);
+        }
+    }
+
+    private void HandleIdleAnimation()
+    {
+        string currentAnimation = _youngOmarGFXAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+
+        if (_youngOmarDirection == "right" && currentAnimation != "YoungOmarIdleRight")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarIdleRight", 0, 0f);
+        }
+        else if (_youngOmarDirection == "left" && currentAnimation != "YoungOmarIdleLeft")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarIdleLeft", 0, 0f);
+        }
+        else if (_youngOmarDirection == "up" && currentAnimation != "YoungOmarIdleForward")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarIdleForward", 0, 0f);
+        }
+        else if (_youngOmarDirection == "down" && currentAnimation != "YoungOmarIdleDown")
+        {
+            _youngOmarGFXAnimator.Play("YoungOmarIdleDown", 0, 0f);
+        }
+    }
     public void UpdateScriptSpace()
     {
         Vector3 moveVector = _shipObject.transform.position;
@@ -168,7 +278,6 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
         _shipObject.transform.position = moveVector;
     }
-
     public bool UpdateScriptPlayerDeath()
     {
         bool result = false;
@@ -203,7 +312,6 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
             if (value > 0)
             {
                 _leftRightInputValue = 1;
-                Debug.Log("movement");
             }
             else if (value < 0)
             {
@@ -321,6 +429,7 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
         _score = continer._scoreCount;
         _shipObject.transform.position = continer._playerPosition;
     }
+
 
     public void TakeDamage(int Amount)
     {

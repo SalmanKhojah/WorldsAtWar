@@ -15,9 +15,20 @@ public class ScenePhase : MonoBehaviour
     private List<GameObject> leftPieces = new List<GameObject>();
     private List<GameObject> rightPieces = new List<GameObject>();
 
+    private AudioSource audioSource;
+
+  
+    public AudioClip soundClip;
+
     public void StartPhaseScene()
     {
         StartCoroutine(CaptureAndAnimateScreenshot());
+         audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        PlaySound();
     }
 
     private IEnumerator CaptureAndAnimateScreenshot()
@@ -191,4 +202,13 @@ private IEnumerator MergeAndSeparatePieces()
     StartCoroutine(AnimatePieces(leftPieces, separationDirectionFirst, finalSeparationDistance, finalSeparationDuration));
     StartCoroutine(AnimatePieces(rightPieces, separationDirectionSecond, finalSeparationDistance, finalSeparationDuration));
 }
+
+    private void PlaySound()
+    {
+        if (soundClip != null)
+        {
+            audioSource.clip = soundClip;
+            audioSource.Play();
+        }
+    }
 }

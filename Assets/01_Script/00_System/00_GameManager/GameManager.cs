@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     private SamDialogueMainManager _samDialogueMainManager;
     private StarGenerator _starGenerator;
     private OPBSMainManager _opbsMainManager;
+    private OldManDialogueManager _oldmanDialogueManager;
+    private PressXAnimation _pressXAnimation;
 
     private float _currentWaitBeforeResettingTime = 0;
     private float _maxWaitBeforeResettingTime = 3.0f;
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
     private EventSystemReference _eventSystem;
 
     private PlayerDeathAnimationStep _step;
+
 
 
     public void SwitchState(GMBaseState nextState)
@@ -98,9 +101,13 @@ public class GameManager : MonoBehaviour
         _samDialogueMainManager = FindAnyObjectByType<SamDialogueMainManager>();
         _enemyMainManger = FindAnyObjectByType<EnemeyMainManger>();
         _starGenerator = FindAnyObjectByType<StarGenerator>();
+        _oldmanDialogueManager = FindAnyObjectByType<OldManDialogueManager>();
+        _pressXAnimation = FindAnyObjectByType<PressXAnimation>();
         
         _playerManager.InitializeYoungOmar();
         _opbsMainManager.Initialize();
+        _oldmanDialogueManager.Initialize();
+        _pressXAnimation.Initialize();
         //_playerManager.InitializeSpace();
         //_starGenerator.Initialize();
         // _bulletMainManger.Initialize();
@@ -149,12 +156,18 @@ public class GameManager : MonoBehaviour
         // _bulletMainManger.UpdateScript();
         // _explosionManager.UpdateScript();
         // _samDialogueMainManager.UpdateScript();
+            _oldmanDialogueManager.UpdateScript();
+            _pressXAnimation.UpdateScript();
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {
             // _esMainManager.PutAllEnemiesToSleep();
             // _explosionManager.PutExpolsionToSleep();
             SwitchState(_initSate);
+        }
+        if (_pressXAnimation.switchit)
+        {
+            _playerManager.InitializeSpace();
         }
     }
 

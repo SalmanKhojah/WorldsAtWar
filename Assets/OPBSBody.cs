@@ -19,8 +19,6 @@ public class OPBSBody : MonoBehaviour
     public void BeginObject()
     {
 
-        transform.GetComponent<Collider2D>().enabled = true;
-
 
         gameObject.SetActive(true);
     }
@@ -54,7 +52,6 @@ public class OPBSBody : MonoBehaviour
     public void RemoveOPBS()
     {
         EventSystemReference.Instance.OPBSPutObjectBackToSleepEventHandler.Invoke(this);
-        transform.GetComponent<Collider2D>().enabled = false;
         gameObject.SetActive(false);
     }
 

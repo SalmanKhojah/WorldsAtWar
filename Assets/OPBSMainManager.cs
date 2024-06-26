@@ -57,7 +57,7 @@ public class OPBSMainManager : MonoBehaviour
 
     public void UpdateScript()
     {
-            BeginOPBS(5);
+            BeginOPBS(56);
 
 
 
