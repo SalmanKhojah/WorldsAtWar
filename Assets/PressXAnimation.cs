@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Cinemachine;
 using UnityEngine.UI;
 
 public class PressXAnimation : MonoBehaviour
@@ -16,7 +17,10 @@ public class PressXAnimation : MonoBehaviour
 
     public GameObject blackScreen;
     Image blackScreenImage;
-    public float fadeDuration = 0.5f;
+    public TMP_Text segmentText;
+    public float fadeDuration = 0f;
+    public CinemachineVirtualCamera cameraOmarPlanet;
+    private Animator _omarPlanetGFXAnimator;
 
 
     
@@ -27,7 +31,8 @@ public class PressXAnimation : MonoBehaviour
         _playerMainManager = FindObjectOfType<PlayerMainManger>();
         switchit = false;
         blackScreenImage = blackScreen.GetComponent<Image>();
-
+        segmentText.gameObject.SetActive(false);
+        _omarPlanetGFXAnimator = transform.GetChild(0).GetComponent<Animator>();
 
 
 
@@ -42,6 +47,16 @@ public class PressXAnimation : MonoBehaviour
             
         }
 
+    }
+    IEnumerator SwitchToOmarPlanetCamera(CinemachineVirtualCamera cameraOmarPlanet)
+    {
+        cameraOmarPlanet.Priority = 11; 
+        yield return new WaitForSeconds(2);
+        _omarPlanetGFXAnimator.Play("OmarPlanetExplode", 0, 0f);
+        yield return StartCoroutine(FadeToBlack());
+        yield return new WaitForSeconds(1);
+        _omarPlanetGFXAnimator.Play("OmarPlanetIdle", 0, 0f);
+        cameraOmarPlanet.Priority = 4; 
     }
 IEnumerator AnimateDialogueMessage()
 {
@@ -77,7 +92,12 @@ IEnumerator AnimateDialogueMessage()
         }
     }
 
-    yield return StartCoroutine(FadeToBlack());
+
+    yield return SwitchToOmarPlanetCamera(cameraOmarPlanet);
+    
+
+    segmentText.gameObject.SetActive(true);
+    yield return new WaitForSeconds(3f);
     
     DialogueImage.transform.localScale = originalScale;
     DialogueImage.SetActive(false);
@@ -86,6 +106,8 @@ IEnumerator AnimateDialogueMessage()
     textboxText.color = originalTextColor; 
     pressXsoundsource.Stop();
     switchit = true;
+
+    segmentText.gameObject.SetActive(false);
 
     yield return StartCoroutine(FadeFromBlack());
     

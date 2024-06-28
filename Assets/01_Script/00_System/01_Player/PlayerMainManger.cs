@@ -29,6 +29,7 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     private int _currentHealth = 0;
     private int _maxHealth = 1;
     private Animator _youngOmarGFXAnimator;
+
     public InputActionAsset inputActionAsset;
     private string _youngOmarDirection = "right"; //Defaults at right
 
@@ -37,6 +38,7 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     private bool _inHatch = false;
     public CinemachineVirtualCamera cameraSpace;
     public CinemachineVirtualCamera cameraYoungOmar;
+
 
 
 
@@ -128,8 +130,8 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
         if (moveVector.x > leftBound && moveVector.x < rightBound && moveVector.y < upperBound && moveVector.y > lowerBound)
         {
-            
             _inHatch = true;
+
         }
         else
         {
@@ -187,22 +189,22 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
             if (minDist == distToLeft)
             {
                 moveVector.x = leftBound;
-                Debug.Log("Moved to left boundary.");
+                
             }
             else if (minDist == distToRight)
             {
                 moveVector.x = rightBound;
-                Debug.Log("Moved to right boundary.");
+                
             }
             else if (minDist == distToUpper)
             {
                 moveVector.y = upperBound;
-                Debug.Log("Moved to upper boundary.");
+       
             }
             else if (minDist == distToLower)
             {
                 moveVector.y = lowerBound;
-                Debug.Log("Moved to lower boundary.");
+             
             }
         }
 
