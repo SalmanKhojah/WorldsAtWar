@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     private OPBSMainManager _opbsMainManager;
     private OldManDialogueManager _oldmanDialogueManager;
     private PressXAnimation _pressXAnimation;
-
+    private OldManTextBox _oldManTextBox;
     private float _currentWaitBeforeResettingTime = 0;
     private float _maxWaitBeforeResettingTime = 3.0f;
 
@@ -93,29 +93,16 @@ public class GameManager : MonoBehaviour
        
         _playerManager = FindAnyObjectByType<PlayerMainManger>();
         _opbsMainManager = FindAnyObjectByType<OPBSMainManager>();
-        _bulletMainManger = FindAnyObjectByType<BulletMainManger>();
         _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
-        _explosionManager = FindAnyObjectByType<ExplosionManager>();
-        _fadeinManager = FindAnyObjectByType<FadeinManager>();
-        _esMainManager = FindAnyObjectByType<ESMainManager>();
-        _samDialogueMainManager = FindAnyObjectByType<SamDialogueMainManager>();
-        _enemyMainManger = FindAnyObjectByType<EnemeyMainManger>();
-        _starGenerator = FindAnyObjectByType<StarGenerator>();
         _oldmanDialogueManager = FindAnyObjectByType<OldManDialogueManager>();
         _pressXAnimation = FindAnyObjectByType<PressXAnimation>();
-        
+        _oldManTextBox = FindAnyObjectByType<OldManTextBox>();       
+
         _playerManager.InitializeYoungOmar();
         _opbsMainManager.Initialize();
         _oldmanDialogueManager.Initialize();
         _pressXAnimation.Initialize();
-        //_playerManager.InitializeSpace();
-        //_starGenerator.Initialize();
-        // _bulletMainManger.Initialize();
-        // _gameUiMainManager.Initialize();
-        // _explosionManager.Initialize();
-        // _fadeinManager.Initialize();
-        // _esMainManager.Initialize();
-        // _samDialogueMainManager.Initialize();
+        _gameUiMainManager.Initialize();
         // _enemyMainManger.Initialize();
         
 
@@ -167,7 +154,10 @@ public class GameManager : MonoBehaviour
         }
         if (_pressXAnimation.switchit)
         {
-            _playerManager.InitializeSpace();
+            _oldManTextBox.HideTextbox();
+            _opbsMainManager.PutAllOPBSToSleep();
+            SwitchState(_level1RobotBattle);
+        // _enemyMainManger.Initialize();
         }
     }
 
@@ -257,18 +247,38 @@ public class GameManager : MonoBehaviour
 
     public void OnEnterLevel1RobotBattle()
     {
-        _enemyMainManger.BeginWave(1, 10);
-        _playerManager.SetScore();
-       // DataPersistenceManager.Instance.LoadGame();
+        _playerManager = FindAnyObjectByType<PlayerMainManger>();
+        _bulletMainManger = FindAnyObjectByType<BulletMainManger>();
+        _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
+        _explosionManager = FindAnyObjectByType<ExplosionManager>();
+        _fadeinManager = FindAnyObjectByType<FadeinManager>();
+        _esMainManager = FindAnyObjectByType<ESMainManager>();
+        _samDialogueMainManager = FindAnyObjectByType<SamDialogueMainManager>();
+        _starGenerator = FindAnyObjectByType<StarGenerator>();
+  
+        
+        
+        _playerManager.InitializeSpace();
+        _starGenerator.Initialize();
+        _bulletMainManger.Initialize();
+        _gameUiMainManager.Initialize();
+        _explosionManager.Initialize();
+        _fadeinManager.Initialize();
+        _esMainManager.Initialize();
+        _samDialogueMainManager.Initialize();
+
+        
     }
 
     public void OnUpdateLevel1RobotBattle()
     {
-        //_playerManager.UpdateScriptYoungOmar();
+    
         _playerManager.UpdateScriptSpace();
-        _enemyMainManger.UpdateScript();
+        _starGenerator.UpdateScript();
+        _esMainManager.UpdateScript();
         _bulletMainManger.UpdateScript();
         _explosionManager.UpdateScript();
+        _samDialogueMainManager.UpdateScript();
 
         Debug.Log("updaterobot");
 

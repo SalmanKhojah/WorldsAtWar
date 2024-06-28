@@ -33,9 +33,9 @@ public class PlayerDeathController : MonoBehaviour
 
         _startToEndFlag = true;
 
-        _shipBody = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(1).GetComponent<MeshRenderer>();
+        // _shipBody = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(1).GetComponent<MeshRenderer>();
 
-        _shipBody.material.SetColor("_Color", _startColor);
+        // _shipBody.material.SetColor("_Color", _startColor);
     }
 
     public Vector3 UpdateScript()

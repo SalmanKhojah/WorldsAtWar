@@ -10,7 +10,7 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     private float _YoungOmarSpeed = 4.5f;
     private float _normalShotSpeed = 13.0f;
 
-    private PlayerDeathController _playerDeathController;
+    //private PlayerDeathController _playerDeathController;
 
     private int _score;
 
@@ -31,7 +31,7 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     private Animator _youngOmarGFXAnimator;
     public InputActionAsset inputActionAsset;
     private string _youngOmarDirection = "right"; //Defaults at right
-    public InputAction _talkAction;
+
     private Vector2 _lastInputDirection = Vector2.zero;
     private bool _hasTalkedToOldMan = false;
     private bool _inHatch = false;
@@ -72,8 +72,8 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
 
-        _playerDeathController = GetComponent<PlayerDeathController>();
-        _playerDeathController.Initialize();
+        // _playerDeathController = GetComponent<PlayerDeathController>();
+        // _playerDeathController.Initialize();
 
         SetPlayerShipActiveState(true);
 
@@ -206,6 +206,24 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
             }
         }
 
+                if (moveVector.x > 5170.6)
+        {
+            moveVector.x = 5170.6f;
+        }
+        if (moveVector.x < 4975.5)
+        {
+            moveVector.x = 4975.5f;
+        }
+
+        if (moveVector.y > 18)
+        {
+            moveVector.y = 18;
+        }
+        if (moveVector.y < -13.6)
+        {
+            moveVector.y = -13.6f;
+        }
+
         _youngOmarObject.transform.position = moveVector;
     }
     private void PlayAnimationIfNeeded(string _youngOmarDirection)
@@ -282,7 +300,7 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     {
         bool result = false;
 
-        _shipObject.transform.position = _playerDeathController.UpdateScript();
+        // _shipObject.transform.position = _playerDeathController.UpdateScript();
 
         if (_shipObject.transform.position == Vector3.zero)
         {
@@ -442,8 +460,8 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
         if (_currentHealth == 0)
         {
-            EventSystemReference.Instance.GameManagerStartPlayerDeathSequenceHandler.Invoke();
-            _playerDeathController.StartMovingToCenterLerpProcess(_shipObject.transform.position);
+            // EventSystemReference.Instance.GameManagerStartPlayerDeathSequenceHandler.Invoke();
+            // _playerDeathController.StartMovingToCenterLerpProcess(_shipObject.transform.position);
         }
     }
 

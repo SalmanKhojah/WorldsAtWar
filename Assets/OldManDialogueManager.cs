@@ -30,7 +30,7 @@ public class OldManDialogueManager : MonoBehaviour
         {
             _textBoxManager.ShowTextbox("Omar, oh my young boy, are you hurt?");
             _textBoxManager.ShowTextbox("Forget that, there's no time, the fire is spreading.");
-            _textBoxManager.ShowTextbox("Follow the path and open the hatch");
+            _textBoxManager.ShowTextbox("Follow the path and open the hatch.");
             _textBoxManager.ShowTextbox("Get inside it Omar, be quick!");
 
             _dialogueShown = true;

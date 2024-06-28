@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class CameraZoom : MonoBehaviour
 {
-    public Camera cameraToZoom; // Assign this in the inspector
-    public float targetFOV = 30f; // Target field of view
-    public float zoomDuration = 2f; // Duration of the zoom effect
+    public Camera cameraToZoom; 
+    public float targetFOV = 30f; 
+    public float zoomDuration = 2f; 
 
-    // Call this method to start zooming
+
     public void StartZoom()
     {
         StartCoroutine(ZoomCamera(targetFOV, zoomDuration));
@@ -21,13 +21,12 @@ public class CameraZoom : MonoBehaviour
 
         while (time < duration)
         {
-            // Smoothly interpolate the camera's field of view
+       
             cameraToZoom.fieldOfView = Mathf.Lerp(startFOV, targetFOV, time / duration);
             time += Time.deltaTime;
             yield return null;
         }
 
-        // Ensure the target FOV is set after the loop
         cameraToZoom.fieldOfView = targetFOV;
     }
 }

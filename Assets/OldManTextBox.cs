@@ -27,11 +27,11 @@ public class OldManTextBox : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !isTyping && textQueue.Count > 0)
         {
             StartCoroutine(TypeText(textQueue.Dequeue()));
-            DialoguePointer.SetActive(false);
-            StopCoroutine("AnimateDialoguePointer");
-        }
-        else if (!isTyping && textQueue.Count == 0)
-        {
+            if (textQueue.Count == 0)
+            {
+                DialoguePointer.SetActive(false);
+                StopCoroutine("AnimateDialoguePointer");
+            }
             DialoguePointer.SetActive(false);
             StopCoroutine("AnimateDialoguePointer");
         }
@@ -55,41 +55,39 @@ public class OldManTextBox : MonoBehaviour
         }
     }
 
-    IEnumerator TypeText(string text)
+   IEnumerator TypeText(string text)
+{
+    isTyping = true;
+    textboxText.text = ""; // Start with an empty text
+    float lastSoundTime = Time.time; // Initialize the last sound play time
+
+    foreach (char c in text)
     {
-        isTyping = true;
-        textboxText.text = "";
-        float lastSoundTime = Time.time;
-
-        foreach (char c in text)
+        textboxText.text += c; // Add each character one by one
+        if (c != ' ' && typingSoundSource != null && typingSound != null && Time.time - lastSoundTime >= soundCooldown)
         {
-            textboxText.text += c;
-
-            if (c != ' ' && typingSoundSource != null && typingSound != null && Time.time - lastSoundTime >= soundCooldown)
-            {
-                typingSoundSource.PlayOneShot(typingSound);
-                lastSoundTime = Time.time;
-            }
-
-            yield return new WaitForSeconds(0.1f);
+            typingSoundSource.PlayOneShot(typingSound); // Play the typing sound
+            lastSoundTime = Time.time;
         }
-
-        yield return new WaitForSeconds(1f);
-
-        isTyping = false;
-
-        if (textQueue.Count > 0)
-        {
-            StopCoroutine("AnimateDialoguePointer");
-            DialoguePointer.SetActive(true);
-            StartCoroutine("AnimateDialoguePointer");
-        }
-        if (textQueue.Count == 0)
-        {
-            textboxText.text = "";
-            HideTextbox();
-        }
+        yield return new WaitForSeconds(0.1f); // Wait a bit before adding the next character
     }
+
+    yield return new WaitForSeconds(1f); // Wait a bit after finishing typing
+    isTyping = false; // Finished typing the current message
+
+    // Control the DialoguePointer based on the queue's state
+    if (textQueue.Count > 0)
+    {
+        DialoguePointer.SetActive(true); // Show the DialoguePointer if there are more messages
+            StartCoroutine("AnimateDialoguePointer"); // Start the animation
+        
+    }
+    else
+    {
+        textboxText.text = "";
+        HideTextbox();
+    }
+}
 
     IEnumerator AnimateDialoguePointer()
     {
@@ -112,9 +110,10 @@ public class OldManTextBox : MonoBehaviour
             yield return null;
         }
     }
-
+    
     public void HideTextbox()
     {
+        textboxText.text = "";
         textboxPanel.SetActive(false);
         black0.SetActive(false);
         black1.SetActive(false);

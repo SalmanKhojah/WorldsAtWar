@@ -10,7 +10,7 @@ public class OPBSBody : MonoBehaviour
     public void Initialize()
     {
 
-        playerMainManager = FindObjectOfType<PlayerMainManger>();
+        //playerMainManager = FindObjectOfType<PlayerMainManger>();
 
         
 
