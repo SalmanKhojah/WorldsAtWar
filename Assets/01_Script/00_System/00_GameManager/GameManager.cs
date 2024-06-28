@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {
-            SwitchState(_initSate);
+            
         }
     }
 

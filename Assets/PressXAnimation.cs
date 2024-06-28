@@ -18,9 +18,10 @@ public class PressXAnimation : MonoBehaviour
     public GameObject blackScreen;
     Image blackScreenImage;
     public TMP_Text segmentText;
-    public float fadeDuration = 0f;
+    public float fadeDuration = 0.5f;
     public CinemachineVirtualCamera cameraOmarPlanet;
     private Animator _omarPlanetGFXAnimator;
+    private bool isFading = false;
 
 
     
@@ -50,13 +51,18 @@ public class PressXAnimation : MonoBehaviour
     }
     IEnumerator SwitchToOmarPlanetCamera(CinemachineVirtualCamera cameraOmarPlanet)
     {
+        yield return new WaitForSeconds(2.0f);
         cameraOmarPlanet.Priority = 11; 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3f);
+        yield return StartCoroutine(FadeFromBlack());
         _omarPlanetGFXAnimator.Play("OmarPlanetExplode", 0, 0f);
+        yield return new WaitForSeconds(1.51f);
+        _omarPlanetGFXAnimator.Play("OmarPlanetExplodeIdle2", 0, 0f);
+        yield return new WaitForSeconds(1f);
         yield return StartCoroutine(FadeToBlack());
-        yield return new WaitForSeconds(1);
-        _omarPlanetGFXAnimator.Play("OmarPlanetIdle", 0, 0f);
+        yield return new WaitForSeconds(3.0f);
         cameraOmarPlanet.Priority = 4; 
+        yield return new WaitForSeconds(4.0f);
     }
 IEnumerator AnimateDialogueMessage()
 {
@@ -92,53 +98,66 @@ IEnumerator AnimateDialogueMessage()
         }
     }
 
-
-    yield return SwitchToOmarPlanetCamera(cameraOmarPlanet);
-    
-
-    segmentText.gameObject.SetActive(true);
-    yield return new WaitForSeconds(3f);
-    
+    pressXsoundsource.Stop();
     DialogueImage.transform.localScale = originalScale;
     DialogueImage.SetActive(false);
 
     textboxText.text = "";
     textboxText.color = originalTextColor; 
-    pressXsoundsource.Stop();
+    yield return StartCoroutine(FadeToBlack());
+    yield return SwitchToOmarPlanetCamera(cameraOmarPlanet);
+    
     switchit = true;
+    segmentText.gameObject.SetActive(true);
+    yield return new WaitForSeconds(3f);
+    
+
 
     segmentText.gameObject.SetActive(false);
+
+    yield return new WaitForSeconds(2f);
 
     yield return StartCoroutine(FadeFromBlack());
     
     
 }
 
-    private IEnumerator FadeToBlack()
-    {
-        blackScreen.SetActive(true);
-        float elapsedTime = 0f;
-        while (elapsedTime < fadeDuration)
-        {
-            blackScreenImage.color = Color.Lerp(new Color(0, 0, 0, 0), Color.black, elapsedTime / fadeDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        blackScreenImage.color = Color.black;
-    }
 
-    private IEnumerator FadeFromBlack()
+private IEnumerator FadeToBlack()
+{
+    if (isFading) yield break; 
+    isFading = true;
+    blackScreen.SetActive(true);
+    float elapsedTime = 0f;
+    Color startColor = blackScreenImage.color;
+    Color endColor = Color.black;
+    while (elapsedTime < fadeDuration)
     {
-        float elapsedTime = 0f;
-        while (elapsedTime < fadeDuration)
-        {
-            blackScreenImage.color = Color.Lerp(Color.black, new Color(0, 0, 0, 0), elapsedTime / fadeDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        blackScreenImage.color = new Color(0, 0, 0, 0);
-        blackScreen.SetActive(false);
+        blackScreenImage.color = Color.Lerp(startColor, endColor, elapsedTime / fadeDuration);
+        elapsedTime += Time.deltaTime;
+        yield return null;
     }
+    blackScreenImage.color = endColor;
+    isFading = false;
+}
+
+private IEnumerator FadeFromBlack()
+{
+    if (isFading) yield break; 
+    isFading = true;
+    float elapsedTime = 0f;
+    Color startColor = blackScreenImage.color;
+    Color endColor = new Color(0, 0, 0, 0);
+    while (elapsedTime < fadeDuration)
+    {
+        blackScreenImage.color = Color.Lerp(startColor, endColor, elapsedTime / fadeDuration);
+        elapsedTime += Time.deltaTime;
+        yield return null;
+    }
+    blackScreenImage.color = endColor;
+    blackScreen.SetActive(false);
+    isFading = false;
+}
 
 
 }
