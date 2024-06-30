@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     private GameLoopState _gameLoopState = new GameLoopState();
     private PlayerDeathSequence _playerDeathSequenceState = new PlayerDeathSequence();
 
+    private YoungOmarFarmState _youngOmarFarmState = new YoungOmarFarmState();
+
     private Level1RobotBattle _level1RobotBattle = new Level1RobotBattle();
 
     private ResourcesLoader _resourcesLoader;
@@ -73,7 +75,7 @@ public class GameManager : MonoBehaviour
 
         EventSystemReference.Instance.GameManagerStartPlayerDeathSequenceHandler.AddListener(SwitchSatateToPlayerDeathSequenceState);
 
-        SwitchState(_initSate); 
+        SwitchState(_youngOmarFarmState); 
 
     }
 
@@ -85,6 +87,25 @@ public class GameManager : MonoBehaviour
     public void DataLoadStateOnExitState()
     {
         Debug.Log("this is on Exit for Load Data State");
+    }
+
+    public void OnEnterYoungOmarFarmState()
+    {
+        _playerManager = FindAnyObjectByType<PlayerMainManger>();
+        _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
+
+        _playerManager.InitializeYoungOmarFarm();
+        _gameUiMainManager.Initialize();
+        Debug.Log("entered farm");
+    }
+    public void OnUpdateYoungOmarFarmState()
+    {
+        _playerManager.UpdateScriptYoungOmarFarm();
+        Debug.Log("update farm");
+    }
+    public void OnExitYoungOmarFarmState()
+    {
+        
     }
 
     public void InitStateOnEnterState()
@@ -244,6 +265,8 @@ public class GameManager : MonoBehaviour
     {
 
     }
+
+
 
     public void OnEnterLevel1RobotBattle()
     {

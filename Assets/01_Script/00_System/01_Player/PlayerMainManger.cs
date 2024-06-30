@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class PlayerMainManger : MonoBehaviour, IDataPersistence
 {
@@ -16,9 +17,11 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
     private SpaceShipObject _shipObject;
     private YoungOmarObject _youngOmarObject;
+    private YoungOmarFarmObject _youngOmarFarmObject;
 
     public Transform ShipTransform => _shipObject.transform;
     public Transform YoungOmarTransform => _youngOmarObject.transform;
+    public Transform YoungOmarFarmTransform => _youngOmarFarmObject.transform;
     
     public bool OldManDialogue => _hasTalkedToOldMan;
     public bool InHatch => _inHatch;
@@ -29,15 +32,25 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     private int _currentHealth = 0;
     private int _maxHealth = 1;
     private Animator _youngOmarGFXAnimator;
+    private Animator _youngOmarFarmGFXAnimator;
 
     public InputActionAsset inputActionAsset;
     private string _youngOmarDirection = "right"; //Defaults at right
+    private string _youngOmarFarmDirection = "left";
 
     private Vector2 _lastInputDirection = Vector2.zero;
     private bool _hasTalkedToOldMan = false;
     private bool _inHatch = false;
     public CinemachineVirtualCamera cameraSpace;
     public CinemachineVirtualCamera cameraYoungOmar;
+    public CinemachineVirtualCamera cameraYoungOmarFarm;
+    public Tilemap tilemap;
+    public Tile newTile;
+    private float scytheLastUseTime = -2.0f; 
+    private const float scytheCOOLDOWN = 2.0f; 
+    private bool isScytheEquipped = false;
+    private bool firstEquip = true;
+    private FarmYoungOmarAnimationEvent _farmYoungOmarAnimationEvent;
 
 
 
@@ -57,6 +70,24 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
 
         SetYoungOmarActiveState(true);
+    }
+
+    public void InitializeYoungOmarFarm()
+    {
+        cameraYoungOmarFarm.Priority = 15;
+        EnableActionMap("YoungOmarFarm");
+        _leftRightInputValue = 0;
+        _upDownInputValue = 0;
+        _youngOmarFarmObject = transform.GetChild(2).GetComponent<YoungOmarFarmObject>();
+        _farmYoungOmarAnimationEvent = transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<FarmYoungOmarAnimationEvent>();
+        _farmYoungOmarAnimationEvent.Initialize();
+        _youngOmarFarmGFXAnimator = transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Animator>();
+
+
+        EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
+
+
+        SetYoungOmarFarmActiveState(true);
     }
 
     public void InitializeSpace()
@@ -85,6 +116,10 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     public void SetScore()
     {
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.Invoke(_score);
+    }
+    public void SetYoungOmarFarmActiveState(bool flag)
+    {
+        _youngOmarFarmObject.gameObject.SetActive(flag);
     }
     public void SetYoungOmarActiveState(bool flag)
     {
@@ -140,6 +175,186 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
         }
 
     }
+
+    public void UpdateScriptYoungOmarFarm()
+    {
+
+        MoveYoungOmarFarm();
+
+    }
+
+    private void MoveYoungOmarFarm()
+    {
+        Vector3 moveVector = _youngOmarFarmObject.transform.position;
+
+        moveVector.x += _leftRightInputValue * _YoungOmarSpeed * Time.deltaTime;
+        moveVector.y += _upDownInputValue * _YoungOmarSpeed * Time.deltaTime;
+        bool isMoving = _leftRightInputValue != 0 || _upDownInputValue != 0;
+        if (isMoving)
+        {
+            _youngOmarFarmDirection = _leftRightInputValue < 0 ? "left" : _leftRightInputValue > 0 ? "right" : _upDownInputValue > 0 ? "up" : _upDownInputValue < 0 ? "down" : _youngOmarFarmDirection;
+
+            FarmPlayAnimationIfNeeded(_youngOmarFarmDirection);
+        }
+        else
+        {
+
+            FarmHandleIdleAnimation();
+        }
+
+        // float leftBound = 5056f;
+        // float rightBound = 5058.259f;
+        // float upperBound = 0.39f;
+        // float lowerBound = 0.09f;
+
+        // if (moveVector.x > leftBound && moveVector.x < rightBound && moveVector.y < upperBound && moveVector.y > lowerBound)
+        // {
+
+        //     float distToLeft = Mathf.Abs(moveVector.x - leftBound);
+        //     float distToRight = Mathf.Abs(moveVector.x - rightBound);
+        //     float distToUpper = Mathf.Abs(moveVector.y - upperBound);
+        //     float distToLower = Mathf.Abs(moveVector.y - lowerBound);
+
+
+        //     float minDist = Mathf.Min(distToLeft, distToRight, distToUpper, distToLower);
+
+
+        //     if (minDist == distToLeft)
+        //     {
+        //         moveVector.x = leftBound;
+                
+        //     }
+        //     else if (minDist == distToRight)
+        //     {
+        //         moveVector.x = rightBound;
+                
+        //     }
+        //     else if (minDist == distToUpper)
+        //     {
+        //         moveVector.y = upperBound;
+       
+        //     }
+        //     else if (minDist == distToLower)
+        //     {
+        //         moveVector.y = lowerBound;
+             
+        //     }
+        // }
+
+        //         if (moveVector.x > 5170.6)
+        // {
+        //     moveVector.x = 5170.6f;
+        // }
+        // if (moveVector.x < 4975.5)
+        // {
+        //     moveVector.x = 4975.5f;
+        // }
+
+        // if (moveVector.y > 18)
+        // {
+        //     moveVector.y = 18;
+        // }
+        // if (moveVector.y < -13.6)
+        // {
+        //     moveVector.y = -13.6f;
+        // }
+
+        _youngOmarFarmObject.transform.position = moveVector;
+    }
+    private void FarmPlayAnimationIfNeeded(string _youngOmarFarmDirection)
+    {
+        string currentAnimation = _youngOmarFarmGFXAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+        if (!isScytheEquipped)
+        {
+            _youngOmarFarmGFXAnimator.SetLayerWeight(1, 0);
+            if (_youngOmarFarmDirection == "right" && currentAnimation != "YoungOmarRunRight")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarRunRight", 0, 0f);
+            }
+            else if (_youngOmarFarmDirection == "left" && currentAnimation != "YoungOmarRunLeft")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarRunLeft", 0, 0f);
+            }
+            else if (_youngOmarFarmDirection == "up" && currentAnimation != "YoungOmarRunUp")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarRunUp", 0, 0f);
+            }
+            else if (_youngOmarFarmDirection == "down" && currentAnimation != "YoungOmarRunDown")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarRunDown", 0, 0f);
+            }
+        }
+        else
+        {
+            _youngOmarFarmGFXAnimator.SetLayerWeight(1, 1);
+            string currentAnimation1 = _youngOmarFarmGFXAnimator.GetCurrentAnimatorClipInfo(1)[0].clip.name;
+
+            if (_youngOmarFarmDirection == "left" && currentAnimation1 != "RunLeftScythe")
+            {
+                _youngOmarFarmGFXAnimator.Play("RunLeftScythe", 1, 0f);
+            }
+            else if (_youngOmarFarmDirection == "right" && currentAnimation1 != "RunRightScythe")
+            {
+                _youngOmarFarmGFXAnimator.Play("RunRightScythe", 1, 0f);
+            }
+            else if (_youngOmarFarmDirection == "up" && currentAnimation1 != "YoungOmarRunUp")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarRunUp", 1, 0f);
+            }
+            else if (_youngOmarFarmDirection == "down" && currentAnimation1 != "RunForwardScythe")
+            {
+                _youngOmarFarmGFXAnimator.Play("RunForwardScythe", 1, 0f);
+            }
+        }
+    }
+
+    private void FarmHandleIdleAnimation()
+    {
+        if(!isScytheEquipped)
+        {
+            _youngOmarFarmGFXAnimator.SetLayerWeight(1, 0);
+            if (_youngOmarFarmDirection == "right")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarIdleRight", 0, 0f);
+            }
+            else if (_youngOmarFarmDirection == "left")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarIdleLeft", 0, 0f);
+            }
+            else if (_youngOmarFarmDirection == "up")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarIdleForward", 0, 0f);
+            }
+            else if (_youngOmarFarmDirection == "down")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarIdleDown", 0, 0f);
+        }
+        }
+        else
+        {
+            _youngOmarFarmGFXAnimator.SetLayerWeight(1, 1);
+            if (_youngOmarFarmDirection == "right")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarScytheHoldRight", 1, 0f);
+            }
+            else if (_youngOmarFarmDirection == "left")
+            {
+                _youngOmarFarmGFXAnimator.Play("YoungOmarScytheHold", 1, 0f);
+            }
+            else if (_youngOmarFarmDirection == "up")
+            {
+                _youngOmarFarmGFXAnimator.Play("IdleForwardScythe", 1, 0f);
+            }
+            else if (_youngOmarFarmDirection == "down")
+            {
+                _youngOmarFarmGFXAnimator.Play("IdleBackwardScythe", 1, 0f);
+        
+            }
+          
+        }
+        }
+        
+
     public void UpdateScriptYoungOmar()
     {
 
@@ -369,6 +584,62 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     {
 
     }
+
+    public void YoungOmarFarmScytheEquip(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+
+        isScytheEquipped = !isScytheEquipped;
+        firstEquip = true;
+
+        }
+
+    }
+    public void YoungOmarFarmScytheSlice(InputAction.CallbackContext context)
+    {
+        if (context.started && isScytheEquipped)
+        {
+        if (Time.time - scytheLastUseTime < scytheCOOLDOWN)
+        {
+            return;
+        }
+    
+        _youngOmarFarmGFXAnimator.SetLayerWeight(2, 1);
+        if (_youngOmarFarmDirection == "right")
+        {
+            _youngOmarFarmGFXAnimator.Play("YoungOmarScythePrepRight", 2, 0f);
+        }
+        else if (_youngOmarFarmDirection == "left")
+        {
+            _youngOmarFarmGFXAnimator.Play("YoungOmarScythePrepLeft", 2, 0f);
+        }
+
+        Vector3Int playerPosition = Vector3Int.FloorToInt(_youngOmarFarmObject.transform.position);
+        ReplaceTilesAroundPlayer(playerPosition);
+
+        scytheLastUseTime = Time.time;
+        // FarmHandleIdleAnimation();
+
+        }
+    }
+    private void ReplaceTilesAroundPlayer(Vector3Int centerPosition)
+    {
+        int startX = centerPosition.x - 2;
+        int startY = centerPosition.y - 2;
+        int endX = centerPosition.x + 2;
+        int endY = centerPosition.y + 2;
+
+        for (int x = startX; x <= endX; x++)
+        {
+            for (int y = startY; y <= endY; y++)
+            {
+                Vector3Int tilePosition = new Vector3Int(x, y, 0);
+                tilemap.SetTile(tilePosition, newTile);
+            }
+        }
+    }
+
 
     public void SpaceReadUserLeftRightMovementInput(InputAction.CallbackContext context)
     {

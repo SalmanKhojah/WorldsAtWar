@@ -6,13 +6,6 @@ using TMPro;
 public class OldManTextBox : MonoBehaviour
 {
     public GameObject textboxPanel;
-    public GameObject black0;
-    public GameObject black1;
-    public GameObject black2;
-
-    public GameObject black3;
-
-    public GameObject black4;
     //public GameObject SpeakerImage;
     public TMP_Text textboxText;
     public AudioSource typingSoundSource;
@@ -40,11 +33,6 @@ public class OldManTextBox : MonoBehaviour
     public void ShowTextbox(string text)
     {
         textboxPanel.SetActive(true);
-        black0.SetActive(true);
-        black1.SetActive(true);
-        black2.SetActive(true);
-        black3.SetActive(true);
-        black4.SetActive(true);
         //SpeakerImage.SetActive(true);
 
         textQueue.Enqueue(text);
@@ -115,11 +103,6 @@ public class OldManTextBox : MonoBehaviour
     {
         textboxText.text = "";
         textboxPanel.SetActive(false);
-        black0.SetActive(false);
-        black1.SetActive(false);
-        black2.SetActive(false);
-        black3.SetActive(false);
-        black4.SetActive(false);
         //SpeakerImage.SetActive(false);
         DialoguePointer.SetActive(false);
         StopCoroutine("AnimateDialoguePointer");

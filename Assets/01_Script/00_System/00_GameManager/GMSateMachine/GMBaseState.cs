@@ -98,4 +98,21 @@ public class Level1RobotBattle : GMBaseState
         manager.OnExitLevel1RobotBattle();
     }
 }
+public class YoungOmarFarmState : GMBaseState
+{
+    public override void OnEnterState(GameManager manger)
+    {
+        manger.OnEnterYoungOmarFarmState();
+    }
+
+    public override void OnUpdateState(GameManager manager)
+    {
+        manager.OnUpdateYoungOmarFarmState();
+    }
+
+    public override void OnExitState(GameManager manager)
+    {
+        manager.OnExitYoungOmarFarmState();
+    }
+}
 
