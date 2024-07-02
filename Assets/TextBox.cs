@@ -17,7 +17,7 @@ public class TextBox : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !isTyping && textQueue.Count > 0)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("CrossButton")) && !isTyping && textQueue.Count > 0)
         {
             StartCoroutine(TypeText(textQueue.Dequeue()));
             if (textQueue.Count == 0)

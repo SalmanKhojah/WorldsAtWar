@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     private EventSystemReference _eventSystem;
 
     private PlayerDeathAnimationStep _step;
+    private FlashFarm _flashFarm;
 
 
 
@@ -93,15 +94,23 @@ public class GameManager : MonoBehaviour
     {
         _playerManager = FindAnyObjectByType<PlayerMainManger>();
         _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
+        _flashFarm = FindAnyObjectByType<FlashFarm>();
 
         _playerManager.InitializeYoungOmarFarm();
         _gameUiMainManager.Initialize();
-        Debug.Log("entered farm");
+        _flashFarm.Initialize();
+        
     }
     public void OnUpdateYoungOmarFarmState()
     {
+        if (!_flashFarm.switchToPostFlash)
+        {
         _playerManager.UpdateScriptYoungOmarFarm();
-        Debug.Log("update farm");
+        }
+        if (_flashFarm.switchToPostFlash)
+        {
+            SwitchState(_initSate);
+        }
     }
     public void OnExitYoungOmarFarmState()
     {
@@ -117,13 +126,18 @@ public class GameManager : MonoBehaviour
         _gameUiMainManager = FindAnyObjectByType<GameUiMainManager>();
         _oldmanDialogueManager = FindAnyObjectByType<OldManDialogueManager>();
         _pressXAnimation = FindAnyObjectByType<PressXAnimation>();
-        _oldManTextBox = FindAnyObjectByType<OldManTextBox>();       
+        _oldManTextBox = FindAnyObjectByType<OldManTextBox>();    
+        _flashFarm = FindAnyObjectByType<FlashFarm>();   
 
+        _flashFarm.Initialize();
+        _flashFarm.TriggerWhiteFlash();
         _playerManager.InitializeYoungOmar();
         _opbsMainManager.Initialize();
         _oldmanDialogueManager.Initialize();
         _pressXAnimation.Initialize();
         _gameUiMainManager.Initialize();
+        _playerManager.SetYoungOmarFarmActiveState(false);
+
         // _enemyMainManger.Initialize();
         
 
@@ -171,7 +185,7 @@ public class GameManager : MonoBehaviour
         {
             // _esMainManager.PutAllEnemiesToSleep();
             // _explosionManager.PutExpolsionToSleep();
-            SwitchState(_initSate);
+            //SwitchState(_initSate);
         }
         if (_pressXAnimation.switchit)
         {

@@ -46,24 +46,34 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
     public CinemachineVirtualCamera cameraYoungOmarFarm;
     public Tilemap tilemap;
     public Tile newTile;
-    private float scytheLastUseTime = -2.0f; 
-    private const float scytheCOOLDOWN = 2.0f; 
+    private float scytheLastUseTime = -5.0f; 
+    private const float scytheCOOLDOWN = 5.0f; 
     private bool isScytheEquipped = false;
     private bool firstEquip = true;
     private FarmYoungOmarAnimationEvent _farmYoungOmarAnimationEvent;
+    private int scytheSliceSuccessCount = 0;
+    public bool isScytheSliceSuccessThreeTimes = false;
+    private FlashFarm _flashFarm;
+    private AudioSource _youngOmarFarmAudioSource;
+    private AudioClip _scytheSound;
 
 
 
 
     public void InitializeYoungOmar()
     {
+        cameraYoungOmarFarm.Priority = 4;
         cameraYoungOmar.Priority = 10;
         cameraSpace.Priority = 5;
         EnableActionMap("YoungOmar");
+        DisableActionMap("YoungOmarFarm");
         _leftRightInputValue = 0;
         _upDownInputValue = 0;
         _youngOmarObject = transform.GetChild(1).GetComponent<YoungOmarObject>();
         _youngOmarGFXAnimator = transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<Animator>();
+         _youngOmarGFXAnimator.SetLayerWeight(0, 1);
+        _youngOmarGFXAnimator.SetLayerWeight(1, 0);
+        _youngOmarGFXAnimator.SetLayerWeight(2, 0);
 
 
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
@@ -82,6 +92,9 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
         _farmYoungOmarAnimationEvent = transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<FarmYoungOmarAnimationEvent>();
         _farmYoungOmarAnimationEvent.Initialize();
         _youngOmarFarmGFXAnimator = transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Animator>();
+        _flashFarm = FindAnyObjectByType<FlashFarm>();
+        _youngOmarFarmAudioSource = transform.GetChild(2).GetChild(0).GetComponent<AudioSource>();
+        _scytheSound = _youngOmarFarmAudioSource.clip; 
 
 
         EventSystemReference.Instance.SendScoreToPlayerEventHandler.AddListener(UpdatePlayerScore);
@@ -617,8 +630,18 @@ public class PlayerMainManger : MonoBehaviour, IDataPersistence
 
         Vector3Int playerPosition = Vector3Int.FloorToInt(_youngOmarFarmObject.transform.position);
         ReplaceTilesAroundPlayer(playerPosition);
+        _youngOmarFarmAudioSource.PlayOneShot(_scytheSound);
 
         scytheLastUseTime = Time.time;
+
+        scytheSliceSuccessCount++;
+
+        if (scytheSliceSuccessCount >= 3)
+        {
+            isScytheSliceSuccessThreeTimes = true; 
+            _flashFarm.TriggerWhiteFlash();
+            SetYoungOmarFarmActiveState(false);
+        }
         // FarmHandleIdleAnimation();
 
         }
